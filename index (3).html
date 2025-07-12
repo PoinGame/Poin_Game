@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PoinGame - Top Up Game</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      background: linear-gradient(135deg,#0f172a,#1e1b4b,#0d1117);
+      color: #fff;
+      font-family: sans-serif;
+    }
+    .logo-text {
+      font-family: 'Bangers', cursive;
+      font-size: 2.8rem;
+      color: #ffe600;
+      text-shadow: 2px 2px 0 #000, 3px 3px 5px rgba(0,0,0,0.6);
+    }
+    .game-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: 0.3s;
+      border: 2px solid transparent;
+    }
+    .game-card:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: #facc15;
+      box-shadow: 0 0 10px #facc15aa;
+    }
+    .nav-link {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      transition: all 0.3s;
+    }
+    .nav-link:hover, .nav-link.active {
+      background-color: rgba(251, 191, 36, 0.2);
+      color: #facc15;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .payment-method {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .payment-method:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    .payment-method img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+    }
+    .tiktok-section {
+      background: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 20px 0;
+    }
+    .tiktok-card {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 15px;
+      max-width: 400px;
+      margin: 0 auto;
+      transition: all 0.3s;
+    }
+    .tiktok-card:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-3px);
+    }
+    .tiktok-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #25F4EE;
+    }
+    .tiktok-username {
+      color: #25F4EE;
+      font-weight: bold;
+    }
+    .tiktok-followers {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.7);
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Header -->
+  <header class="p-4 border-b border-white border-opacity-10 bg-black bg-opacity-20 backdrop-blur">
+    <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+      <h1 class="logo-text">PoinGame</h1>
+      <div class="flex items-center gap-2">
+        <input id="searchInput" type="text" placeholder="Cari game..." class="px-4 py-2 rounded-lg text-black w-full sm:w-64"/>
+        <button onclick="searchGame()" class="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded-lg font-semibold">Cari</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="bg-black bg-opacity-30 p-2 sticky top-0 z-10 backdrop-blur">
+    <div class="container mx-auto flex justify-center gap-4">
+      <button onclick="showTab('beranda')" class="nav-link active">Beranda</button>
+      <button onclick="showTab('game')" class="nav-link">Game</button>
+      <button onclick="showTab('berita')" class="nav-link">Berita</button>
+    </div>
+  </nav>
+
+  <!-- Beranda Content -->
+  <div id="beranda" class="tab-content active">
+    <div class="container mx-auto px-4 py-6">
+      <h2 class="text-2xl font-bold mb-4 text-yellow-400">Top Up Game</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="homeGameGrid"></div>
+      
+      <h2 class="text-2xl font-bold mt-8 mb-4 text-yellow-400">Metode Pembayaran</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div class="payment-method" onclick="selectPaymentMethod('DANA')">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_DANA.svg" alt="DANA">
+          <span>DANA (+Rp3.000)</span>
+        </div>
+        <div class="payment-method" onclick="selectPaymentMethod('OVO')">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg" alt="OVO">
+          <span>OVO (+Rp3.000)</span>
+        </div>
+        <div class="payment-method" onclick="selectPaymentMethod('GoPay')">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GoPay">
+          <span>GoPay (+Rp3.000)</span>
+        </div>
+        <div class="payment-method" onclick="selectPaymentMethod('Transfer Bank')">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Bank_Central_Asia.svg" alt="Bank Transfer">
+          <span>Transfer Bank</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Content -->
+  <div id="game" class="tab-content">
+    <div class="container mx-auto px-4 py-6">
+      <div id="gameGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+    </div>
+  </div>
+
+  <!-- Berita Content -->
+  <div id="berita" class="tab-content container mx-auto px-4 py-6">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl font-bold mb-6 text-yellow-400">Berita Terkini</h2>
+      
+      <div class="game-card p-6 mb-6">
+        <h3 class="text-2xl font-bold mb-3">PoinGame Diciptakan Tahun 2025</h3>
+        <p class="mb-4">PoinGame didirikan pada tahun 2025 dengan visi menjadi platform top up game terbaik di Indonesia. Dalam waktu singkat, kami telah dipercaya oleh ribuan gamer di seluruh negeri.</p>
+        <p class="text-sm text-gray-400">Diposting: 1 Januari 2025</p>
+      </div>
+      
+      <div class="game-card p-6 mb-6">
+        <h3 class="text-2xl font-bold mb-3">Event Ulang Tahun PoinGame</h3>
+        <p class="mb-4">Setiap hari ulang tahun PoinGame, kami menyelenggarakan event menarik dengan hadiah-hadiah spesial untuk pelanggan setia kami. Jangan lewatkan kesempatan ini!</p>
+        <p class="text-sm text-gray-400">Diposting: 15 Maret 2025</p>
+      </div>
+      
+      <div class="game-card p-6 mb-6">
+        <h3 class="text-2xl font-bold mb-3">Kode Diskon Event Spesial</h3>
+        <p class="mb-4">Untuk setiap event resmi yang kami adakan, akan ada kode diskon khusus yang bisa kalian gunakan untuk mendapatkan potongan harga spesial.</p>
+        <p class="text-sm text-gray-400">Diposting: 20 April 2025</p>
+      </div>
+      
+      <div class="game-card p-6">
+        <h3 class="text-2xl font-bold mb-3">Diskon 5% Top Up Pertama</h3>
+        <p class="mb-4">Bagi pelanggan baru yang melakukan top up pertama kali di PoinGame, kami memberikan diskon spesial sebesar 5% untuk transaksi pertama Anda.</p>
+        <p class="text-sm text-gray-400">Diposting: 1 Mei 2025</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div id="paymentSection" class="container mx-auto px-4 py-6 hidden">
+    <div class="bg-white bg-opacity-10 p-6 rounded-lg shadow-lg max-w-xl mx-auto">
+      <h2 class="text-2xl font-bold mb-4 text-center">Form Top Up <span id="selectedGameName"></span></h2>
+      
+      <div class="mb-6">
+        <h3 class="text-lg font-bold mb-2">Daftar Harga:</h3>
+        <div id="priceList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4"></div>
+      </div>
+      
+      <form onsubmit="processPayment(event)">
+        <label id="gameIdLabel" class="block mb-2 font-semibold">User ID</label>
+        <input id="userIdInput" type="text" placeholder="Masukkan ID kamu" class="w-full px-4 py-2 rounded bg-white text-black mb-4" required/>
+        
+        <label class="block mb-2 font-semibold">Pilih Nominal</label>
+        <select id="nominalSelect" class="w-full px-4 py-2 rounded bg-white text-black mb-4" required>
+          <option value="">-- Pilih Nominal --</option>
+        </select>
+        
+        <label class="block mb-2 font-semibold">Kode Promo (Opsional)</label>
+        <input id="promoInput" type="text" placeholder="Kode Promo Jika Ada" class="w-full px-4 py-2 rounded bg-white text-black mb-4"/>
+        
+        <label class="block mb-2 font-semibold">Metode Pembayaran</label>
+        <div id="selectedPaymentMethod" class="payment-method mb-4">
+          <img id="paymentMethodIcon" src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_DANA.svg" alt="Payment Method">
+          <span id="paymentMethodText">DANA (+Rp3.000)</span>
+        </div>
+        <input type="hidden" id="paymentMethod" value="DANA">
+        
+        <div id="firstPurchaseDiscount" class="hidden bg-green-500 bg-opacity-20 p-2 rounded mb-4 text-sm">
+          � Diskon 5% untuk top up pertama Anda!
+        </div>
+        
+        <div id="totalPrice" class="text-right font-bold text-lg mb-4"></div>
+        
+        <button type="submit" class="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded-lg font-semibold w-full">
+          Beli Sekarang
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TikTok Section -->
+  <div class="tiktok-section">
+    <div class="container mx-auto px-4 py-6 text-center">
+      <h2 class="text-2xl font-bold mb-4 text-yellow-400">Ikuti Kami di TikTok</h2>
+      <p class="mb-6 max-w-2xl mx-auto">Dapatkan info promo terbaru, giveaway, dan konten menarik seputar game di akun TikTok kami!</p>
+      
+      <a href="https://www.tiktok.com/@p0in_game_?_t=ZS-8xxVTaRoGcy&_r=1" target="_blank" class="tiktok-card">
+        <img src="https://p16-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/7536918195354862593~c5_720x720.jpeg?x-expires=1659470400&x-signature=ABC123EXAMPLE" alt="PoinGame TikTok" class="tiktok-avatar">
+        <div class="text-left">
+          <div class="tiktok-username">@p0in_game_</div>
+          <div class="tiktok-followers">100K+ Followers</div>
+          <div class="mt-2">
+            <span class="inline-block bg-black text-white px-3 py-1 rounded-full text-sm">Follow</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- WhatsApp -->
+  <a href="https://wa.me/6283121606904" target="_blank" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-green-600 transition">
+    Chat Admin
+  </a>
+
+  <script>
+    const games = [
+      { name:"Mobile Legends", idLabel:"ID (Zone ID)" },
+      { name:"Free Fire", idLabel:"Player ID" },
+      { name:"PUBG Mobile", idLabel:"Character ID" },
+      { name:"Valorant", idLabel:"Riot ID" },
+      { name:"CODM", idLabel:"UID CODM" },
+      { name:"FC Mobile", idLabel:"FC ID" },
+      { name:"Blood Strike", idLabel:"User ID" },
+      { name:"Honor of Kings", idLabel:"Server ID" },
+      { name:"COD PC", idLabel:"Activision ID" },
+      { name:"Clash of Clans", idLabel:"Tag Pemain (#ABC123)" },
+      { name:"Arena of Valor", idLabel:"UID AOV" },
+      { name:"Genshin Impact", idLabel:"UID Genshin" }
+    ];
+
+    const hargaTopUp = {
+      "Mobile Legends": [
+        { nominal: "3 Diamonds", harga: 1600 }, { nominal: "5 Diamonds", harga: 3000 },
+        { nominal: "12 Diamonds", harga: 3600 }, { nominal: "19 Diamonds", harga: 7000 },
+        { nominal: "28 Diamonds", harga: 8000 }, { nominal: "44 Diamonds", harga: 13000 },
+        { nominal: "59 Diamonds", harga: 16000}, { nominal: "85 Diamonds", harga: 24000},
+        { nominal: "170 Diamonds", harga: 45000 }, { nominal: "296 Diamonds", harga: 76000 },
+        { nominal: "408 Diamonds", harga: 105000 }, { nominal: "568 Diamonds", harga: 142000 },
+        { nominal: "875 Diamonds", harga: 217000 }, { nominal: "2010 Diamonds", harga: 465000 },
+        { nominal: "4830 Diamonds", harga: 1110000 }, { nominal: "Weekly Diamond Pass", harga: 135000 },
+        { nominal: "Twilight Pass", harga: 158000 }
+      ],
+      "Free Fire": [
+        { nominal: "5 Diamonds", harga: 1500 }, { nominal: "12 Diamonds", harga: 2500 },
+        { nominal: "50 Diamonds", harga: 8000 }, { nominal: "70 Diamonds", harga: 12000 },
+        { nominal: "140 Diamonds", harga: 19000 }, { nominal: "355 Diamonds", harga: 48000 },
+        { nominal: "720 Diamonds", harga: 93000 }, { nominal: "1450 Diamonds", harga: 185000 }
+      ],
+      "PUBG Mobile": [
+        { nominal: "60 UC", harga: 16000 }, { nominal: "180 UC", harga: 45000 },
+        { nominal: "300+25 UC", harga: 70000 }, { nominal: "1080+85 UC", harga: 260000 },
+        { nominal: "2400+385 UC", harga: 575000 }, { nominal: "5100+1210 UC", harga: 1217000 }
+      ],
+      "Valorant": [
+        { nominal: "475 VP", harga: 50000 },
+        { nominal: "1000 VP", harga: 100000 },
+        { nominal: "2050 VP", harga: 196000 },
+        { nominal: "3650 VP", harga: 335000 },
+        { nominal: "5350 VP", harga: 480000 },
+        { nominal: "11000 VP", harga: 941000 }
+      ],
+      "CODM": [
+        { nominal: "63 CP", harga: 10009 },
+        { nominal: "128 CP", harga: 19018 },
+        { nominal: "321 CP", harga: 46045 },
+        { nominal: "645 CP", harga: 91090 },
+        { nominal: "800 CP", harga: 109108 },
+        { nominal: "1 373 CP", harga: 171000 },
+        { nominal: "2 060 CP", harga: 271270 },
+        { nominal: "3 564 CP", harga: 451450 },
+        { nominal: "5 619 CP", harga: 658658 },
+        { nominal: "7 656 CP", harga: 901901 },
+        { nominal: "15 312 CP", harga: 1802802 },
+        { nominal: "38 280 CP", harga: 4505505 },
+        { nominal: "76 560 CP", harga: 9010009 }
+      ],
+      "FC Mobile": [
+        { nominal: "39 Silver", harga: 7600 },
+        { nominal: "99 Silver", harga: 17100 },
+        { nominal: "499 Silver", harga: 80500 },
+        { nominal: "999 Silver", harga: 161000 },
+        { nominal: "1999 Silver", harga: 332000 },
+        { nominal: "4999 Silver", harga: 804700 },
+        { nominal: "9999 Silver", harga: 1609300 },
+        { nominal: "40 FC Points", harga: 7600 },
+        { nominal: "100 FC Points", harga: 17100 },
+        { nominal: "520 FC Points", harga: 80500 },
+        { nominal: "1070 FC Points", harga: 161000 },
+        { nominal: "2200 FC Points", harga: 332000 },
+        { nominal: "5750 FC Points", harga: 804700 },
+        { nominal: "12000 FC Points", harga: 1609300 }
+      ],
+      "Blood Strike": [
+        { nominal: "100 Gold", harga: 14600 },
+        { nominal: "300 Gold", harga: 41800 },
+        { nominal: "500 Gold", harga: 69100 },
+        { nominal: "1000 Gold", harga: 137000 },
+        { nominal: "2000 Gold", harga: 273100 },
+        { nominal: "5000 Gold", harga: 681200 }
+      ],
+      "Honor of Kings": [
+        { nominal: "80 Tokens", harga: 15185 },
+        { nominal: "240 Tokens", harga: 43696 },
+        { nominal: "400 Tokens", harga: 72207 },
+        { nominal: "560 Tokens", harga: 100818 },
+        { nominal: "830 Tokens", harga: 143586 },
+        { nominal: "1245 Tokens", harga: 214863 },
+        { nominal: "2508 Tokens", harga: 428698 },
+        { nominal: "4180 Tokens", harga: 713811 },
+        { nominal: "8360 Tokens", harga: 1426592 },
+        { nominal: "Weekly Card", harga: 14600 },
+        { nominal: "Weekly Card Plus", harga: 40950 }
+      ],
+      "COD PC": [
+        { nominal: "COD4: MW (digital)", harga: 165000 },
+        { nominal: "COD: MW2", harga: 248000 },
+        { nominal: "COD: Black Ops III", harga: 327000 }
+      ],
+      "Clash of Clans": [
+        { nominal: "80 Gems", harga: 16800 },
+        { nominal: "1200 Gems", harga: 163000 },
+        { nominal: "2500 Gems", harga: 301300 },
+        { nominal: "6500 Gems", harga: 751800 },
+        { nominal: "14000 Gems", harga: 1502500 }
+      ],
+      "Arena of Valor": [
+        { nominal: "40 Vouchers", harga: 11065 },
+        { nominal: "90 Vouchers", harga: 21130 },
+        { nominal: "470 Vouchers", harga: 101485 },
+        { nominal: "4800 Vouchers", harga: 1005190 },
+        { nominal: "48200 Vouchers", harga: 10047560 }
+      ],
+      "Genshin Impact": [
+        { nominal: "60 Crystals", harga: 15865 },
+        { nominal: "300+30 Crystals", harga: 73973 },
+        { nominal: "980+110 Crystals", harga: 230730 },
+        { nominal: "1980+260 Crystals", harga: 441541 },
+        { nominal: "3280+600 Crystals", harga: 735234 },
+        { nominal: "6480+1600 Crystals", harga: 1468568 },
+        { nominal: "Blessing of the Welkin Moon", harga: 73973 }
+      ]
+    };
+
+    const paymentMethods = {
+      "DANA": {
+        name: "DANA (+Rp3.000)",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_DANA.svg",
+        fee: 3000
+      },
+      "OVO": {
+        name: "OVO (+Rp3.000)",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg",
+        fee: 3000
+      },
+      "GoPay": {
+        name: "GoPay (+Rp3.000)",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg",
+        fee: 3000
+      },
+      "Transfer Bank": {
+        name: "Transfer Bank",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Bank_Central_Asia.svg",
+        fee: 0
+      }
+    };
+
+    const gameGrid = document.getElementById("gameGrid");
+    const homeGameGrid = document.getElementById("homeGameGrid");
+    const paymentSection = document.getElementById("paymentSection");
+    const selectedGameName = document.getElementById("selectedGameName");
+    const gameIdLabel = document.getElementById("gameIdLabel");
+    const priceList = document.getElementById("priceList");
+    const nominalSelect = document.getElementById("nominalSelect");
+    const totalPrice = document.getElementById("totalPrice");
+    const firstPurchaseDiscount = document.getElementById("firstPurchaseDiscount");
+    let isFirstPurchase = true;
+    let selectedPaymentMethod = "DANA";
+    let currentGamePrices = [];
+
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+      
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      event.target.classList.add('active');
+    }
+
+    function renderGames(filter = "") {
+      gameGrid.innerHTML = "";
+      homeGameGrid.innerHTML = "";
+      
+      games.filter(g => g.name.toLowerCase().includes(filter.toLowerCase())).forEach(game => {
+        const card = document.createElement("div");
+        card.className = "game-card p-4 rounded-lg text-center cursor-pointer";
+        card.innerHTML = `<h3 class="text-lg font-semibold">${game.name}</h3>`;
+        card.addEventListener("click", () => {
+          selectedGameName.textContent = game.name;
+          gameIdLabel.textContent = game.idLabel;
+          currentGamePrices = hargaTopUp[game.name] || [];
+          showPriceList();
+          paymentSection.classList.remove("hidden");
+          paymentSection.scrollIntoView({ behavior: "smooth" });
+          
+          if (isFirstPurchase) {
+            firstPurchaseDiscount.classList.remove('hidden');
+          } else {
+            firstPurchaseDiscount.classList.add('hidden');
+          }
+        });
+        
+        gameGrid.appendChild(card.cloneNode(true));
+        homeGameGrid.appendChild(card);
+      });
+    }
+
+    function showPriceList() {
+      priceList.innerHTML = "";
+      nominalSelect.innerHTML = '<option value="">-- Pilih Nominal --</option>';
+      
+      currentGamePrices.forEach(item => {
+        // Add to price list display
+        const priceItem = document.createElement("div");
+        priceItem.className = "bg-white bg-opacity-10 p-2 rounded";
+        priceItem.innerHTML = `<span class="font-medium">${item.nominal}</span>: <span class="text-yellow-400">Rp${item.harga.toLocaleString()}</span>`;
+        priceList.appendChild(priceItem);
+        
+        // Add to dropdown select
+        const option = document.createElement("option");
+        option.value = item.nominal;
+        option.textContent = `${item.nominal} - Rp${item.harga.toLocaleString()}`;
+        nominalSelect.appendChild(option);
+      });
+      
+      calculateTotal();
+    }
+
+    function searchGame() {
+      renderGames(document.getElementById("searchInput").value);
+    }
+
+    function selectPaymentMethod(method) {
+      selectedPaymentMethod = method;
+      const payment = paymentMethods[method];
+      document.getElementById("paymentMethodIcon").src = payment.icon;
+      document.getElementById("paymentMethodText").textContent = payment.name;
+      document.getElementById("paymentMethod").value = method;
+      calculateTotal();
+    }
+
+    function calculateTotal() {
+      const selectedNominal = nominalSelect.value;
+      if (!selectedNominal) {
+        totalPrice.textContent = "";
+        return;
+      }
+      
+      const selectedItem = currentGamePrices.find(item => item.nominal === selectedNominal);
+      if (!selectedItem) return;
+      
+      let basePrice = selectedItem.harga;
+      if (isFirstPurchase) {
+        basePrice = Math.round(basePrice * 0.95);
+      }
+      
+      const fee = paymentMethods[selectedPaymentMethod].fee;
+      const total = basePrice + fee;
+      
+      totalPrice.textContent = `Total: Rp${total.toLocaleString()}`;
+      totalPrice.innerHTML += isFirstPurchase ? 
+        ` <span class="text-sm text-green-400">(Sudah termasuk diskon 5%)</span>` : 
+        ` <span class="text-sm text-gray-400">(Biaya admin Rp${fee.toLocaleString()})</span>`;
+    }
+
+    function processPayment(event) {
+      event.preventDefault();
+      
+      const game = selectedGameName.textContent;
+      const userId = document.getElementById("userIdInput").value.trim();
+      const nominal = nominalSelect.value;
+      const promo = document.getElementById("promoInput").value.trim();
+      
+      if (!userId) {
+        alert("Masukkan ID pengguna.");
+        return;
+      }
+      
+      if (!nominal) {
+        alert("Pilih nominal top up.");
+        return;
+      }
+      
+      const selectedItem = currentGamePrices.find(item => item.nominal === nominal);
+      if (!selectedItem) return;
+      
+      let basePrice = selectedItem.harga;
+      if (isFirstPurchase) {
+        basePrice = Math.round(basePrice * 0.95);
+      }
+      
+      const fee = paymentMethods[selectedPaymentMethod].fee;
+      const total = basePrice + fee;
+      
+      let msg = `Halo Admin, saya ingin top up *${game}*.\n\n`;
+      msg += `📌 ID: *${userId}*\n`;
+      msg += `💎 Nominal: *${nominal}*\n`;
+      msg += `💰 Harga: *Rp${selectedItem.harga.toLocaleString()}*\n`;
+      msg += `💳 Metode Pembayaran: *${paymentMethods[selectedPaymentMethod].name}*\n`;
+      msg += `💵 Total Bayar: *Rp${total.toLocaleString()}*\n`;
+      
+      if (isFirstPurchase) {
+        msg += `🎉 Diskon 5% Pembelian Pertama\n`;
+        isFirstPurchase = false;
+      }
+      
+      if (promo) {
+        msg += `🏷️ Kode Promo: *${promo}*\n`;
+      }
+      
+      window.open(`https://wa.me/6283121606904?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    // Initialize
+    renderGames();
+    selectPaymentMethod("DANA"); // Set default payment method
+    
+    // Event listeners
+    nominalSelect.addEventListener("change", calculateTotal);
+  </script>
+</body>
+</html>
